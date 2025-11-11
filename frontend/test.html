@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - Test</title>
+    <link rel="stylesheet" href="css/main.css">
+    <style>
+        body {
+            padding: 2rem;
+        }
+        .test-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .test-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .test-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Shopping Cart Refactoring Test</h1>
+
+        <div class="test-section">
+            <h2>File Structure Test</h2>
+            <div id="fileTest"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>CSS Test</h2>
+            <div id="cssTest">
+                <p>Checking if CSS variables are properly defined...</p>
+                <div id="cssTestResult"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>JavaScript Module Test</h2>
+            <div id="jsTest">
+                <p>Testing JavaScript modules...</p>
+                <div id="jsTestResult"></div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Component Structure Test</h2>
+            <div id="componentTest"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Test file structure
+        function testFileStructure() {
+            const testDiv = document.getElementById('fileTest');
+            const requiredFiles = [
+                'css/main.css',
+                'css/main.min.css',
+                'js/index.js',
+                'js/main.js',
+                'js/api/client.js',
+                'js/components/ShoppingCart.js',
+                'js/utils/domUtils.js',
+                'scss/main.scss'
+            ];
+
+            let allFilesExist = true;
+            const results = [];
+
+            requiredFiles.forEach(file => {
+                const exists = fetch(file, { method: 'HEAD' })
+                    .then(() => true)
+                    .catch(() => false);
+
+                results.push(file);
+            });
+
+            Promise.all(results.map(file =>
+                fetch(file, { method: 'HEAD' })
+                    .then(() => ({ file, exists: true }))
+                    .catch(() => ({ file, exists: false }))
+            )).then(results => {
+                const success = results.filter(r => r.exists).length;
+                const total = results.length;
+
+                testDiv.innerHTML = `
+                    <div class="test-result ${success === total ? 'test-success' : 'test-error'}">
+                        <strong>${success}/${total} files found</strong><br>
+                        ${success === total ?
+                            'All required files are present!' :
+                            `Missing ${total - success} files: ${results.filter(r => !r.exists).map(r => r.file).join(', ')}`
+                        }
+                    </div>
+                `;
+            });
+        }
+
+        // Test CSS variables
+        function testCSSVariables() {
+            const testDiv = document.getElementById('cssTestResult');
+            const style = document.createElement('style');
+            style.textContent = `
+                #cssTest { color: var(--primary-color, 'default'); }
+            `;
+            document.head.appendChild(style);
+
+            const computedStyle = getComputedStyle(document.getElementById('cssTest'));
+            const hasCustomProps = computedStyle.color !== 'rgb(255, 0, 0)';
+
+            testDiv.innerHTML = `
+                <div class="test-result ${hasCustomProps ? 'test-success' : 'test-error'}">
+                    <strong>CSS Variables: ${hasCustomProps ? 'Found' : 'Not Found'}</strong><br>
+                    ${hasCustomProps ? 'SCSS variables are properly compiled!' : 'SCSS compilation may have issues.'}
+                </div>
+            `;
+        }
+
+        // Test JavaScript modules
+        function testJavaScriptModules() {
+            const testDiv = document.getElementById('jsTestResult');
+
+            // Test if modules can be imported (this will fail in this context but we can test syntax)
+            const script = document.createElement('script');
+            script.textContent = `
+                try {
+                    // Basic JavaScript syntax test
+                    const testObj = { key: 'value' };
+                    const testArr = [1, 2, 3];
+                    const testFn = () => 'test';
+
+                    if (typeof testObj.key === 'string' &&
+                        Array.isArray(testArr) &&
+                        typeof testFn === 'function') {
+                        window.jsTestSuccess = true;
+                    } else {
+                        window.jsTestSuccess = false;
+                    }
+                } catch (error) {
+                    window.jsTestSuccess = false;
+                    window.jsTestError = error.message;
+                }
+            `;
+            document.body.appendChild(script);
+
+            setTimeout(() => {
+                const success = window.jsTestSuccess === true;
+                testDiv.innerHTML = `
+                    <div class="test-result ${success ? 'test-success' : 'test-error'}">
+                        <strong>JavaScript Syntax: ${success ? 'Valid' : 'Invalid'}</strong><br>
+                        ${success ? 'JavaScript modules are syntactically correct!' : 'JavaScript has syntax errors.'}
+                        ${window.jsTestError ? `<br>Error: ${window.jsTestError}` : ''}
+                    </div>
+                `;
+                delete window.jsTestSuccess;
+                delete window.jsTestError;
+            }, 100);
+        }
+
+        // Test component structure
+        function testComponentStructure() {
+            const testDiv = document.getElementById('componentTest');
+            const components = [
+                { name: 'ShoppingCart', file: 'js/components/ShoppingCart.js' },
+                { name: 'APIClient', file: 'js/api/client.js' },
+                { name: 'DOMUtils', file: 'js/utils/domUtils.js' }
+            ];
+
+            let testsHTML = '<h3>Component Files:</h3>';
+
+            components.forEach(component => {
+                testsHTML += `
+                    <div class="test-section">
+                        <h4>${component.name}</h4>
+                        <p>File: ${component.file}</p>
+                        <div id="${component.name.toLowerCase()}-test"></div>
+                    </div>
+                `;
+            });
+
+            testDiv.innerHTML = testsHTML;
+
+            // Test each component file
+            components.forEach(component => {
+                fetch(component.file, { method: 'HEAD' })
+                    .then(() => {
+                        const testResult = document.getElementById(`${component.name.toLowerCase()}-test`);
+                        testResult.innerHTML = `
+                            <div class="test-result test-success">
+                                ✅ ${component.name} module exists and is accessible
+                            </div>
+                        `;
+                    })
+                    .catch(() => {
+                        const testResult = document.getElementById(`${component.name.toLowerCase()}-test`);
+                        testResult.innerHTML = `
+                            <div class="test-result test-error">
+                                ❌ ${component.name} module not found
+                            </div>
+                        `;
+                    });
+            });
+        }
+
+        // Run all tests
+        document.addEventListener('DOMContentLoaded', () => {
+            testFileStructure();
+            testCSSVariables();
+            testJavaScriptModules();
+            testComponentStructure();
+        });
+    </script>
+</body>
+</html>

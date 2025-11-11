@@ -1,0 +1,72 @@
+// Main SCSS file - imports all other SCSS files
+@import 'variables';
+@import 'mixins';
+@import 'base';
+@import 'layout';
+
+// Component imports
+@import 'components/header';
+@import 'components/cart-item';
+@import 'components/cart-summary';
+@import 'components/loading-spinner';
+@import 'components/product-item';
+
+// Global styles that apply to all elements
+button, a, input, select, textarea {
+    transition: all $transition-speed $transition-timing;
+}
+
+// Focus styles for accessibility
+button:focus, a:focus, input:focus, select:focus, textarea:focus {
+    outline: 2px solid $primary-color;
+    outline-offset: 2px;
+}
+
+// Responsive utilities
+.text-center {
+    @include text-center;
+}
+
+.text-truncate {
+    @include text-truncate;
+}
+
+// Utility classes
+.shadow-sm { box-shadow: $shadow-sm; }
+.shadow-md { box-shadow: $shadow-md; }
+.shadow-lg { box-shadow: $shadow-lg; }
+
+.rounded-sm { border-radius: $border-radius-sm; }
+.rounded { border-radius: $border-radius; }
+.rounded-lg { border-radius: $border-radius-lg; }
+
+// Hidden class for toggling visibility
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: block !important;
+}
+
+// Spacing utilities
+.mt-xs { margin-top: $spacing-xs; }
+.mt-sm { margin-top: $spacing-sm; }
+.mt-md { margin-top: $spacing-md; }
+.mt-lg { margin-top: $spacing-lg; }
+.mt-xl { margin-top: $spacing-xl; }
+.mt-xxl { margin-top: $spacing-xxl; }
+
+.mb-xs { margin-bottom: $spacing-xs; }
+.mb-sm { margin-bottom: $spacing-sm; }
+.mb-md { margin-bottom: $spacing-md; }
+.mb-lg { margin-bottom: $spacing-lg; }
+.mb-xl { margin-bottom: $spacing-xl; }
+.mb-xxl { margin-bottom: $spacing-xxl; }
+
+.p-xs { padding: $spacing-xs; }
+.p-sm { padding: $spacing-sm; }
+.p-md { padding: $spacing-md; }
+.p-lg { padding: $spacing-lg; }
+.p-xl { padding: $spacing-xl; }
+.p-xxl { padding: $spacing-xxl; }

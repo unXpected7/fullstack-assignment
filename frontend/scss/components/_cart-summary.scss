@@ -1,0 +1,143 @@
+// Cart summary styles
+.cart-summary {
+    background: $background-secondary;
+    border-radius: $border-radius;
+    padding: $spacing-lg;
+    box-shadow: $shadow-md;
+    position: sticky;
+    top: $spacing-md;
+}
+
+.summary-header {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: $text-primary;
+    margin-bottom: $spacing-md;
+    padding-bottom: $spacing-md;
+    border-bottom: 2px solid $border-color;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing-sm;
+    padding: $spacing-xs 0;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+.summary-label {
+    color: $text-secondary;
+    font-size: 0.875rem;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: $text-primary;
+
+    &.discount {
+        color: $secondary-color;
+    }
+
+    &.total {
+        color: $primary-color;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+}
+
+.summary-divider {
+    height: 1px;
+    background: $border-color;
+    margin: $spacing-md 0;
+}
+
+.discount-section {
+    margin-bottom: $spacing-md;
+}
+
+.discount-input-group {
+    display: flex;
+    gap: $spacing-sm;
+    margin-bottom: $spacing-md;
+}
+
+.discount-input {
+    flex: 1;
+    padding: $spacing-sm;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    font-size: 0.875rem;
+}
+
+.apply-discount-btn {
+    background: $secondary-color;
+    color: white;
+    border: none;
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $border-radius;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all $transition-speed $transition-timing;
+
+    &:hover {
+        background: darken($secondary-color, 10%);
+    }
+}
+
+.remove-discount-btn {
+    background: $danger-color;
+    color: white;
+    border: none;
+    padding: $spacing-xs $spacing-sm;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all $transition-speed $transition-timing;
+
+    &:hover {
+        background: darken($danger-color, 10%);
+    }
+}
+
+.action-buttons {
+    display: flex;
+    gap: $spacing-sm;
+    margin-top: $spacing-md;
+}
+
+.clear-cart-btn {
+    background: $warning-color;
+    color: white;
+    border: none;
+    padding: $spacing-md $spacing-lg;
+    border-radius: $border-radius;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all $transition-speed $transition-timing;
+    flex: 1;
+
+    &:hover {
+        background: darken($warning-color, 10%);
+    }
+}
+
+.checkout-btn {
+    background: $primary-color;
+    color: white;
+    border: none;
+    padding: $spacing-md $spacing-lg;
+    border-radius: $border-radius;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all $transition-speed $transition-timing;
+    flex: 2;
+
+    &:hover {
+        background: darken($primary-color, 10%);
+    }
+}

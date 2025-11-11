@@ -1,0 +1,29 @@
+// Layout styles
+.container {
+    max-width: $large-desktop;
+    margin: 0 auto;
+    padding: 0 $spacing-md;
+}
+
+.grid-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: $spacing-lg;
+
+    @include tablet {
+        grid-template-columns: 1fr;
+    }
+}
+
+.main-content {
+    background: $background-secondary;
+    border-radius: $border-radius;
+    box-shadow: $shadow-sm;
+    overflow: hidden;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+}

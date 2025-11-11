@@ -1,0 +1,170 @@
+// Mixins for reusable CSS patterns
+
+// Flexbox mixins
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@mixin flex-column {
+    display: flex;
+    flex-direction: column;
+}
+
+// Responsive breakpoints
+@mixin mobile {
+    @media (max-width: #{$mobile - 1px}) {
+        @content;
+    }
+}
+
+@mixin tablet {
+    @media (min-width: #{$mobile}) and (max-width: #{$tablet - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop {
+    @media (min-width: #{$tablet}) and (max-width: #{$desktop - 1px}) {
+        @content;
+    }
+}
+
+@mixin large-desktop {
+    @media (min-width: #{$desktop}) and (max-width: #{$large-desktop - 1px}) {
+        @content;
+    }
+}
+
+@mixin desktop-up {
+    @media (min-width: #{$tablet}) {
+        @content;
+    }
+}
+
+// Animations
+@mixin fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@mixin slide-up {
+    animation: slideUp 0.3s ease-out;
+}
+
+@mixin pulse {
+    animation: pulse 2s infinite;
+}
+
+// Button styles
+@mixin button-primary {
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $border-radius;
+    cursor: pointer;
+    transition: all $transition-speed $transition-timing;
+
+    &:hover {
+        background-color: darken($primary-color, 10%);
+        transform: translateY(-1px);
+    }
+
+    &:active {
+        transform: translateY(0);
+    }
+}
+
+@mixin button-secondary {
+    background-color: $secondary-color;
+    color: white;
+    border: none;
+    padding: $spacing-sm $spacing-lg;
+    border-radius: $border-radius;
+    cursor: pointer;
+    transition: all $transition-speed $transition-timing;
+
+    &:hover {
+        background-color: darken($secondary-color, 10%);
+        transform: translateY(-1px);
+    }
+}
+
+// Grid layouts
+@mixin grid-container($columns: 1, $gap: $spacing-md) {
+    display: grid;
+    grid-template-columns: repeat($columns, 1fr);
+    gap: $gap;
+}
+
+@mixin grid-responsive($mobile-cols: 1, $tablet-cols: 2, $desktop-cols: 3) {
+    @include mobile {
+        @include grid-container($mobile-cols);
+    }
+
+    @include tablet {
+        @include grid-container($tablet-cols);
+    }
+
+    @include desktop {
+        @include grid-container($desktop-cols);
+    }
+}
+
+// Card styles
+@mixin card-shadow {
+    box-shadow: $shadow-md;
+    border-radius: $border-radius;
+    transition: transform $transition-speed $transition-timing;
+
+    &:hover {
+        transform: translateY(-2px);
+        box-shadow: $shadow-lg;
+    }
+}
+
+// Text utilities
+@mixin text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+@mixin text-center {
+    text-align: center;
+}
+
+@mixin text-muted {
+    color: $text-muted;
+    font-size: 0.9em;
+}
+
+// Animations
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
