@@ -1,0 +1,47 @@
+{
+  "prod_001": {
+    "id": "prod_001",
+    "name": "Wireless Headphones",
+    "price": 99.99,
+    "stock": 50,
+    "vendor_id": "vendor_001",
+    "vendor_name": "TechCorp",
+    "image_url": "https://via.placeholder.com/80x80?text=Headphones"
+  },
+  "prod_002": {
+    "id": "prod_002",
+    "name": "Coffee Maker",
+    "price": 149.99,
+    "stock": 30,
+    "vendor_id": "vendor_002",
+    "vendor_name": "HomeGoods Inc",
+    "image_url": "https://via.placeholder.com/80x80?text=Coffee"
+  },
+  "prod_003": {
+    "id": "prod_003",
+    "name": "Running Shoes",
+    "price": 129.99,
+    "stock": 25,
+    "vendor_id": "vendor_003",
+    "vendor_name": "SportGear",
+    "image_url": "https://via.placeholder.com/80x80?text=Shoes"
+  },
+  "prod_004": {
+    "id": "prod_004",
+    "name": "Laptop Stand",
+    "price": 89.99,
+    "stock": 40,
+    "vendor_id": "vendor_001",
+    "vendor_name": "TechCorp",
+    "image_url": "https://via.placeholder.com/80x80?text=Laptop"
+  },
+  "prod_005": {
+    "id": "prod_005",
+    "name": "Desk Lamp",
+    "price": 79.99,
+    "stock": 35,
+    "vendor_id": "vendor_002",
+    "vendor_name": "HomeGoods Inc",
+    "image_url": "https://via.placeholder.com/80x80?text=Lamp"
+  }
+}
