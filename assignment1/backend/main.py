@@ -503,7 +503,7 @@ async def configure_product_service(config: ProductServiceConfig):
     # Insert or update configuration
     cursor.execute('''
         INSERT OR REPLACE INTO product_service_config
-        (endpoint, api_key, headers) VALUES (?, ?, ?)
+        (endpoint, api_key, headers, is_active) VALUES (?, ?, ?, 1)
     ''', (config.endpoint, config.api_key, json.dumps(config.headers or {})))
 
     conn.commit()

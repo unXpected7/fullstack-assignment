@@ -5,7 +5,7 @@ from datetime import datetime
 
 class ProviderConfigCreate(BaseModel):
     name: str = Field(..., min_length=1, max_length=100)
-    provider_type: str = Field(..., regex="^(openai|azure_openai)$")
+    provider_type: str = Field(..., pattern="^(openai|azure_openai)$")
     api_key: str = Field(..., min_length=1)
     base_url: Optional[str] = None
     model: str = Field(default="gpt-3.5-turbo")
@@ -16,7 +16,7 @@ class ProviderConfigCreate(BaseModel):
 
 class ProviderConfigUpdate(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=100)
-    provider_type: Optional[str] = Field(None, regex="^(openai|azure_openai)$")
+    provider_type: Optional[str] = Field(None, pattern="^(openai|azure_openai)$")
     api_key: Optional[str] = Field(None, min_length=1)
     base_url: Optional[str] = None
     model: Optional[str] = None
