@@ -1,10 +1,13 @@
 // Shopping cart main class
+import { apiClient } from '../api/client.js';
+import { storage, showLoading, showToast } from '../utils/domUtils.js';
+
 export class ShoppingCart {
-    constructor(apiClient = apiClient) {
+    constructor(client = apiClient) {
         this.sessionId = null;
         this.cartData = null;
         this.currentDiscountCode = null;
-        this.apiClient = apiClient;
+        this.apiClient = client;
         this.init();
     }
 

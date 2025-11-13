@@ -88,8 +88,8 @@ def init_db():
 
     # Insert sample product service config
     cursor.execute('''
-        INSERT OR IGNORE INTO product_service_config (endpoint, headers)
-        VALUES (?, ?)
+        INSERT OR IGNORE INTO product_service_config (endpoint, headers, is_active)
+        VALUES (?, ?, 1)
     ''', ('https://api.example.com/products', '{}'))
 
     conn.commit()
@@ -228,6 +228,26 @@ async def fetch_product_from_external_api(product_id: str) -> Optional[dict]:
 
     config = cursor.fetchone()
     conn.close()
+
+    # Handle mock data
+    if config and config['endpoint'] == 'mock':
+        # Load mock products from JSON file
+        try:
+            with open('mock_products.json', 'r') as f:
+                mock_products = json.load(f)
+
+            product_data = mock_products.get(product_id)
+            if product_data:
+                # Cache the result
+                product_cache[cache_key] = product_data
+                return product_data
+            return None
+        except FileNotFoundError:
+            print("Mock products file not found")
+            return None
+        except json.JSONDecodeError:
+            print("Invalid JSON in mock products file")
+            return None
 
     if not config or not config['endpoint']:
         return None
@@ -480,11 +500,26 @@ async def configure_product_service(config: ProductServiceConfig):
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # Insert or update configuration
-    cursor.execute('''
-        INSERT OR REPLACE INTO product_service_config
-        (endpoint, api_key, headers) VALUES (?, ?, ?)
-    ''', (config.endpoint, config.api_key, json.dumps(config.headers or {})))
+    # First deactivate all existing configurations
+    cursor.execute('UPDATE product_service_config SET is_active = 0')
+
+    # Check if there's an existing configuration to update
+    cursor.execute('SELECT id FROM product_service_config LIMIT 1')
+    existing = cursor.fetchone()
+
+    if existing:
+        # Update existing configuration
+        cursor.execute('''
+            UPDATE product_service_config
+            SET endpoint = ?, api_key = ?, headers = ?, is_active = 1
+            WHERE id = ?
+        ''', (config.endpoint, config.api_key, json.dumps(config.headers or {}), existing['id']))
+    else:
+        # Insert new configuration
+        cursor.execute('''
+            INSERT INTO product_service_config
+            (endpoint, api_key, headers, is_active) VALUES (?, ?, ?, 1)
+        ''', (config.endpoint, config.api_key, json.dumps(config.headers or {})))
 
     conn.commit()
     conn.close()
