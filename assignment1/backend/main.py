@@ -229,6 +229,26 @@ async def fetch_product_from_external_api(product_id: str) -> Optional[dict]:
     config = cursor.fetchone()
     conn.close()
 
+    # Handle mock data
+    if config and config['endpoint'] == 'mock':
+        # Load mock products from JSON file
+        try:
+            with open('mock_products.json', 'r') as f:
+                mock_products = json.load(f)
+
+            product_data = mock_products.get(product_id)
+            if product_data:
+                # Cache the result
+                product_cache[cache_key] = product_data
+                return product_data
+            return None
+        except FileNotFoundError:
+            print("Mock products file not found")
+            return None
+        except json.JSONDecodeError:
+            print("Invalid JSON in mock products file")
+            return None
+
     if not config or not config['endpoint']:
         return None
 
