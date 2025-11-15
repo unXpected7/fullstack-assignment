@@ -20,6 +20,9 @@ async function initializeApp() {
         // Initialize the shopping cart
         cart = new ShoppingCart(apiClient);
 
+        // Make cart globally available for inline handlers after initialization
+        window.cart = cart;
+
         // Show loading state
         showLoading(true);
 

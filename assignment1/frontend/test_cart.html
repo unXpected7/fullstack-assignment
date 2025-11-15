@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cart Test</title>
+</head>
+<body>
+    <h1>Testing Cart Functionality</h1>
+    <div id="test-results"></div>
+
+    <script>
+        // Test if cart variables are properly initialized
+        async function testCart() {
+            const results = document.getElementById('test-results');
+
+            try {
+                // Test 1: Check if window.cart is available
+                results.innerHTML += '<p>✓ Testing cart initialization...</p>';
+
+                // Load the main application
+                await import('./js/index.js');
+
+                // Wait a bit for initialization
+                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                // Test 2: Check if addToCart function is available
+                if (typeof window.addToCart === 'function') {
+                    results.innerHTML += '<p>✓ addToCart function is available</p>';
+                } else {
+                    results.innerHTML += '<p>✗ addToCart function is NOT available</p>';
+                }
+
+                // Test 3: Check if cart object is available
+                if (window.cart) {
+                    results.innerHTML += '<p>✓ cart object is available</p>';
+                } else {
+                    results.innerHTML += '<p>✗ cart object is NOT available</p>';
+                }
+
+                results.innerHTML += '<p><strong>Cart functionality test completed!</strong></p>';
+
+            } catch (error) {
+                results.innerHTML += `<p>✗ Error: ${error.message}</p>`;
+            }
+        }
+
+        // Run test when page loads
+        testCart();
+    </script>
+</body>
+</html>
