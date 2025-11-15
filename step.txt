@@ -1,0 +1,10 @@
+& "C:\Users\ilyas\venv\Scripts\Activate.ps1"
+
+pip install -r requirements.txt
+
+pip list => to confirm
+
+uvicorn main:app --reload => run
+
+
+uvicorn main:app --reload --port 9000

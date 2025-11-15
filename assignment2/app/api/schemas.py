@@ -12,6 +12,7 @@ class ProviderConfigCreate(BaseModel):
     max_tokens: int = Field(default=2000, ge=1, le=200000)
     temperature: float = Field(default=0.7, ge=0, le=2)
     timeout: int = Field(default=30, ge=1, le=300)
+    is_active: bool = True
 
 
 class ProviderConfigUpdate(BaseModel):
