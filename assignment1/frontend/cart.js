@@ -247,26 +247,26 @@ class ShoppingCart {
     }
 
     renderCart() {
-        const emptyCart = document.getElementById('empty-cart');
-        const cartItemsSection = document.getElementById('cart-items-section');
-        const orderSummary = document.getElementById('order-summary');
+        const cartContainer = document.getElementById('cartContainer');
+        const cartSummary = document.getElementById('cartSummary');
 
         if (this.cartData.items.length === 0) {
-            emptyCart.style.display = 'block';
-            cartItemsSection.style.display = 'none';
-            orderSummary.style.display = 'none';
+            cartContainer.innerHTML = `
+                <div class="empty-cart">
+                    <div class="empty-cart-icon">🛒</div>
+                    <h3>Your cart is empty</h3>
+                    <p>Add some products from the list above to get started!</p>
+                </div>
+            `;
+            cartSummary.innerHTML = '<div class="empty-summary">Cart empty</div>';
         } else {
-            emptyCart.style.display = 'none';
-            cartItemsSection.style.display = 'block';
-            orderSummary.style.display = 'block';
-
             this.renderCartItems();
             this.updateOrderSummary();
         }
     }
 
     renderCartItems() {
-        const container = document.getElementById('cart-items-container');
+        const container = document.getElementById('cartContainer');
         container.innerHTML = '';
 
         this.cartData.items.forEach(item => {
@@ -308,67 +308,97 @@ class ShoppingCart {
     }
 
     updateOrderSummary() {
-        document.getElementById('subtotal').textContent = `$${this.cartData.subtotal.toFixed(2)}`;
-        document.getElementById('discount').textContent = `-$${this.cartData.discount.toFixed(2)}`;
-        document.getElementById('shipping').textContent = `$${this.cartData.shipping.toFixed(2)}`;
-        document.getElementById('total').textContent = `$${this.cartData.total.toFixed(2)}`;
+        const cartSummary = document.getElementById('cartSummary');
 
-        // Update discount applied display
-        const discountApplied = document.getElementById('discount-applied');
-        if (this.currentDiscountCode) {
-            discountApplied.textContent = `Code "${this.currentDiscountCode}" applied`;
-            discountApplied.style.display = 'block';
-        } else {
-            discountApplied.style.display = 'none';
-        }
+        cartSummary.innerHTML = `
+            <div class="cart-summary-content">
+                <h3>Order Summary</h3>
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>$${this.cartData.subtotal.toFixed(2)}</span>
+                </div>
+                <div class="summary-row discount">
+                    <span>Discount:</span>
+                    <span>-$${this.cartData.discount.toFixed(2)}</span>
+                </div>
+                <div class="summary-row">
+                    <span>Shipping:</span>
+                    <span>$${this.cartData.shipping.toFixed(2)}</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span>$${this.cartData.total.toFixed(2)}</span>
+                </div>
 
-        // Update checkout button
-        const checkoutBtn = document.querySelector('.checkout-btn');
-        checkoutBtn.disabled = this.cartData.items.length === 0;
+                ${this.currentDiscountCode ? `
+                    <div class="discount-applied">
+                        Code "${this.currentDiscountCode}" applied
+                    </div>
+                ` : ''}
+
+                <div class="discount-section">
+                    <input type="text" id="discountInput" placeholder="Discount code" class="discount-input">
+                    <button onclick="applyDiscount()" class="apply-discount-btn">Apply</button>
+                </div>
+
+                <button onclick="checkout()" class="checkout-btn" ${this.cartData.items.length === 0 ? 'disabled' : ''}>
+                    Checkout
+                </button>
+            </div>
+        `;
     }
 
     showSessionInfo() {
-        const sessionInfo = document.getElementById('session-info');
+        const sessionInfo = document.getElementById('sessionInfo');
         if (this.sessionId) {
             const shortId = this.sessionId.substring(0, 8);
-            sessionInfo.innerHTML = `<span style="color: #6c757d;">Session: ${shortId}</span>`;
+            sessionInfo.innerHTML = `<span style="color: #6c757d;">${shortId}</span>`;
         }
     }
 
     showLoading(show) {
-        const loading = document.getElementById('loading');
+        const loading = document.getElementById('loadingOverlay');
         if (show) {
-            loading.classList.add('show');
+            loading.style.display = 'flex';
         } else {
-            loading.classList.remove('show');
+            loading.style.display = 'none';
         }
     }
 
     showError(message) {
-        const errorDiv = document.getElementById('error-message');
-        errorDiv.textContent = message;
-        errorDiv.classList.add('show');
+        const errorContainer = document.getElementById('errorContainer');
+        errorContainer.innerHTML = `
+            <div class="error-message">
+                <span>❌ ${message}</span>
+                <button onclick="this.parentElement.parentElement.style.display='none'" class="close-btn">×</button>
+            </div>
+        `;
+        errorContainer.style.display = 'block';
 
         // Auto-hide after 5 seconds
         setTimeout(() => {
-            errorDiv.classList.remove('show');
+            errorContainer.style.display = 'none';
         }, 5000);
     }
 
     showSuccess(message) {
-        const successDiv = document.getElementById('success-message');
-        successDiv.textContent = message;
-        successDiv.classList.add('show');
+        const errorContainer = document.getElementById('errorContainer');
+        errorContainer.innerHTML = `
+            <div class="success-message">
+                <span>✅ ${message}</span>
+                <button onclick="this.parentElement.parentElement.style.display='none'" class="close-btn">×</button>
+            </div>
+        `;
+        errorContainer.style.display = 'block';
 
         // Auto-hide after 3 seconds
         setTimeout(() => {
-            successDiv.classList.remove('show');
+            errorContainer.style.display = 'none';
         }, 3000);
     }
 
     hideMessages() {
-        document.getElementById('error-message').classList.remove('show');
-        document.getElementById('success-message').classList.remove('show');
+        document.getElementById('errorContainer').style.display = 'none';
     }
 
     checkout() {
@@ -421,6 +451,58 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Load and display available products
+window.loadProducts = async function() {
+    try {
+        const response = await fetch(`${cart.apiBase}/config/product-service`);
+        if (response.ok) {
+            const config = await response.json();
+
+            // If using mock products, display the sample products
+            if (config.endpoint === 'mock') {
+                displaySampleProducts();
+            } else {
+                // Would fetch from external API in a real implementation
+                cart.showError('External product service not configured');
+            }
+        } else {
+            cart.showError('Failed to load product configuration');
+        }
+    } catch (error) {
+        cart.showError('Failed to load products: ' + error.message);
+    }
+};
+
+// Display sample products that can be added to cart
+function displaySampleProducts() {
+    const sampleProducts = [
+        { id: 'prod_001', name: 'Wireless Headphones', vendor: 'TechCorp', price: 99.99 },
+        { id: 'prod_002', name: 'Coffee Maker', vendor: 'HomeGoods Inc', price: 149.99 },
+        { id: 'prod_003', name: 'Running Shoes', vendor: 'SportGear', price: 129.99 },
+        { id: 'prod_004', name: 'Laptop Stand', vendor: 'TechCorp', price: 89.99 },
+        { id: 'prod_005', name: 'Desk Lamp', vendor: 'HomeGoods Inc', price: 79.99 }
+    ];
+
+    const container = document.getElementById('productsContainer');
+    container.innerHTML = '';
+
+    sampleProducts.forEach(product => {
+        const productElement = document.createElement('div');
+        productElement.className = 'product-item';
+        productElement.innerHTML = `
+            <div class="product-info">
+                <div class="product-name">${product.name}</div>
+                <div class="product-vendor">${product.vendor}</div>
+                <div class="product-price">$${product.price.toFixed(2)}</div>
+            </div>
+            <button class="add-to-cart-btn" onclick="cart.addItem('${product.id}', 1)">
+                Add to Cart
+            </button>
+        `;
+        container.appendChild(productElement);
+    });
+}
 
 // Add some sample products for testing
 window.addSampleProducts = async function() {
